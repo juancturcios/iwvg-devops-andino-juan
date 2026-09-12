@@ -23,4 +23,10 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
         this.userRepository.deleteById(id);
     }
+
+    public User updateActive(String id) {
+        User user = this.read(id);
+        user.setActive(!user.getActive());
+        return this.userRepository.save(user);
+    }
 }

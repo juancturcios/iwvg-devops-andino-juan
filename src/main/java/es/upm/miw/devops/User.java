@@ -121,4 +121,14 @@ public class User {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    public boolean isBillable() {
+        return hasContent(this.firstName) && hasContent(this.familyName) && hasContent(this.email)
+                && hasContent(this.identity) && hasContent(this.address) && hasContent(this.city)
+                && hasContent(this.province) && hasContent(this.postalCode);
+    }
+
+    private static boolean hasContent(String value) {
+        return value != null && !value.isBlank();
+    }
 }

@@ -17,4 +17,10 @@ public class UserService {
         return this.userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
     }
+
+    public void delete(String id) {
+        this.userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
+        this.userRepository.deleteById(id);
+    }
 }

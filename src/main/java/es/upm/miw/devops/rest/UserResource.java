@@ -2,6 +2,8 @@ package es.upm.miw.devops.rest;
 
 import es.upm.miw.devops.User;
 import es.upm.miw.devops.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +24,11 @@ public class UserResource {
     @GetMapping("/{id}")
     public User read(@PathVariable String id) {
         return this.userService.read(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        this.userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

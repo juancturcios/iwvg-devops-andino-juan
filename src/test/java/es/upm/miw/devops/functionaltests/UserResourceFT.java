@@ -92,4 +92,83 @@ class UserResourceFT {
                 .exchange()
                 .expectStatus().isNotFound();
     }
+
+    @Test
+    void testSearchAll() {
+        webTestClient.get()
+                .uri(UserResource.USERS + "/search")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> assertThat(users).extracting(User::getId).contains("1", "3"));
+    }
+
+    @Test
+    void testSearchByFirstName() {
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(UserResource.USERS + "/search")
+                        .queryParam("firstName", "Juan").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> {
+                    assertThat(users).hasSize(1);
+                    assertThat(users.get(0).getId()).isEqualTo("1");
+                });
+    }
+
+    @Test
+    void testSearchByFamilyName() {
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(UserResource.USERS + "/search")
+                        .queryParam("familyName", "Gutierrez").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> {
+                    assertThat(users).hasSize(1);
+                    assertThat(users.get(0).getId()).isEqualTo("3");
+                });
+    }
+
+    @Test
+    void testSearchByBillableTrue() {
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(UserResource.USERS + "/search")
+                        .queryParam("billable", "true").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> {
+                    assertThat(users).isNotEmpty();
+                    assertThat(users).allMatch(User::isBillable);
+                    assertThat(users).extracting(User::getId).contains("1", "3");
+                });
+    }
+
+    @Test
+    void testSearchByBillableFalse() {
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(UserResource.USERS + "/search")
+                        .queryParam("billable", "false").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> assertThat(users).isEmpty());
+    }
+
+    @Test
+    void testSearchByFirstNameAndBillable() {
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(UserResource.USERS + "/search")
+                        .queryParam("firstName", "Luis")
+                        .queryParam("billable", "true").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> {
+                    assertThat(users).hasSize(1);
+                    assertThat(users.get(0).getId()).isEqualTo("3");
+                });
+    }
 }

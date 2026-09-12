@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -67,5 +69,45 @@ class UserServiceTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .extracting("statusCode")
                 .isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testFindAll() {
+        List<User> users = this.userService.find(null, null, null);
+        assertThat(users).extracting(User::getId).contains("1", "3");
+    }
+
+    @Test
+    void testFindByFirstName() {
+        List<User> users = this.userService.find("Juan", null, null);
+        assertThat(users).hasSize(1);
+        assertThat(users.get(0).getId()).isEqualTo("1");
+    }
+
+    @Test
+    void testFindByFamilyName() {
+        List<User> users = this.userService.find(null, "Gutierrez", null);
+        assertThat(users).hasSize(1);
+        assertThat(users.get(0).getId()).isEqualTo("3");
+    }
+
+    @Test
+    void testFindByBillableTrue() {
+        List<User> users = this.userService.find(null, null, true);
+        assertThat(users).isNotEmpty();
+        assertThat(users).allMatch(User::isBillable);
+        assertThat(users).extracting(User::getId).contains("1", "3");
+    }
+
+    @Test
+    void testFindByBillableFalse() {
+        assertThat(this.userService.find(null, null, false)).isEmpty();
+    }
+
+    @Test
+    void testFindByFirstNameAndBillable() {
+        List<User> users = this.userService.find("Luis", null, true);
+        assertThat(users).hasSize(1);
+        assertThat(users.get(0).getId()).isEqualTo("3");
     }
 }

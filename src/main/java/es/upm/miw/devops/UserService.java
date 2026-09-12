@@ -7,14 +7,14 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class UserService {
 
-    private final UsersDatabase usersDatabase;
+    private final UserRepository userRepository;
 
-    public UserService(UsersDatabase usersDatabase) {
-        this.usersDatabase = usersDatabase;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public User read(String id) {
-        return this.usersDatabase.findById(id)
+        return this.userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
     }
 }

@@ -20,9 +20,11 @@ class UserServiceTest {
     @Test
     void testReadExistingUser() {
         User user = this.userService.read("1");
-        assertThat(user.id()).isEqualTo("1");
-        assertThat(user.name()).isEqualTo("Juan");
-        assertThat(user.familyName()).isEqualTo("Andino");
+        assertThat(user.getId()).isEqualTo("1");
+        assertThat(user.getFirstName()).isEqualTo("Juan");
+        assertThat(user.getFamilyName()).isEqualTo("Andino");
+        assertThat(user.getEmail()).isEqualTo("juan.andino@example.com");
+        assertThat(user.getActive()).isTrue();
     }
 
     @Test

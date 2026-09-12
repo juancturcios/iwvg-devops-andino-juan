@@ -27,9 +27,11 @@ class UserResourceFT {
                 .expectStatus().isOk()
                 .expectBody(User.class)
                 .value(user -> {
-                    assertThat(user.id()).isEqualTo("1");
-                    assertThat(user.name()).isEqualTo("Juan");
-                    assertThat(user.familyName()).isEqualTo("Andino");
+                    assertThat(user.getId()).isEqualTo("1");
+                    assertThat(user.getFirstName()).isEqualTo("Juan");
+                    assertThat(user.getFamilyName()).isEqualTo("Andino");
+                    assertThat(user.getCity()).isEqualTo("Madrid");
+                    assertThat(user.getActive()).isTrue();
                 });
     }
 

@@ -34,4 +34,21 @@ class UserServiceTest {
                 .extracting("statusCode")
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    void testDeleteExistingUser() {
+        this.userService.delete("2");
+        assertThatThrownBy(() -> this.userService.read("2"))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testDeleteNotExistingUser() {
+        assertThatThrownBy(() -> this.userService.delete("no-existe"))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }

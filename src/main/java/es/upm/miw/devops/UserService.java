@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -28,5 +30,17 @@ public class UserService {
         User user = this.read(id);
         user.setActive(!user.getActive());
         return this.userRepository.save(user);
+    }
+
+    public List<User> find(String firstName, String familyName, Boolean billable) {
+        return this.userRepository.findAll().stream()
+                .filter(user -> !hasContent(firstName) || firstName.equals(user.getFirstName()))
+                .filter(user -> !hasContent(familyName) || familyName.equals(user.getFamilyName()))
+                .filter(user -> billable == null || billable.equals(user.isBillable()))
+                .toList();
+    }
+
+    private static boolean hasContent(String value) {
+        return value != null && !value.isBlank();
     }
 }

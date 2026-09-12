@@ -45,4 +45,24 @@ class UserResourceFT {
                 .jsonPath("$.message").isEqualTo("User not found: no-existe")
                 .jsonPath("$.code").isEqualTo(404);
     }
+
+    @Test
+    void testDeleteUserById() {
+        webTestClient.delete()
+                .uri(UserResource.USERS + "/2")
+                .exchange()
+                .expectStatus().isNoContent();
+        webTestClient.get()
+                .uri(UserResource.USERS + "/2")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void testDeleteUserByIdNotFound() {
+        webTestClient.delete()
+                .uri(UserResource.USERS + "/no-existe")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
 }

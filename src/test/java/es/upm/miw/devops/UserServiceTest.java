@@ -51,4 +51,21 @@ class UserServiceTest {
                 .extracting("statusCode")
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    void testUpdateActiveExistingUser() {
+        boolean original = this.userService.read("3").getActive();
+        User user = this.userService.updateActive("3");
+        assertThat(user.getActive()).isEqualTo(!original);
+        user = this.userService.updateActive("3");
+        assertThat(user.getActive()).isEqualTo(original);
+    }
+
+    @Test
+    void testUpdateActiveNotExistingUser() {
+        assertThatThrownBy(() -> this.userService.updateActive("no-existe"))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }

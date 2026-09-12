@@ -65,4 +65,31 @@ class UserResourceFT {
                 .exchange()
                 .expectStatus().isNotFound();
     }
+
+    @Test
+    void testUpdateActiveUserById() {
+        User first = webTestClient.put()
+                .uri(UserResource.USERS + "/3/active")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .returnResult().getResponseBody();
+        webTestClient.put()
+                .uri(UserResource.USERS + "/3/active")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .value(user -> {
+                    assertThat(user.getId()).isEqualTo("3");
+                    assertThat(user.getActive()).isEqualTo(!first.getActive());
+                });
+    }
+
+    @Test
+    void testUpdateActiveUserByIdNotFound() {
+        webTestClient.put()
+                .uri(UserResource.USERS + "/no-existe/active")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
 }

@@ -129,4 +129,29 @@ class UserServiceTest {
                 .extracting("statusCode")
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    void testUpdateActiveList() {
+        List<User> users = this.userService.updateActive(
+                List.of(new UserActive("1", false), new UserActive("3", true)));
+        assertThat(users).hasSize(2);
+        assertThat(users).extracting(User::getId).containsExactlyInAnyOrder("1", "3");
+        assertThat(users).filteredOn(user -> user.getId().equals("1"))
+                .singleElement()
+                .extracting(User::getActive)
+                .isEqualTo(false);
+        assertThat(users).filteredOn(user -> user.getId().equals("3"))
+                .singleElement()
+                .extracting(User::getActive)
+                .isEqualTo(true);
+        this.userService.updateActive(List.of(new UserActive("1", true)));
+    }
+
+    @Test
+    void testUpdateActiveListNotExistingUser() {
+        assertThatThrownBy(() -> this.userService.updateActive(List.of(new UserActive("no-existe", true))))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }

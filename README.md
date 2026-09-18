@@ -12,8 +12,7 @@
 ### Estado del código
 [![DevOps](https://github.com/juancturcios/iwvg-devops-andino-juan/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/juancturcios/iwvg-devops-andino-juan/actions/workflows/continuous-integration.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=juancturcios_iwvg-devops-andino-juan&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=juancturcios_iwvg-devops-andino-juan)
-[![Render broken](https://iwvg-devops-latest.onrender.com/version-badge)](https://iwvg-devops-latest.onrender.com/swagger-ui.html)
-
+[![Render broken](https://iwvg-devops-andino-juan.onrender.com/version-badge)](https://iwvg-devops-andino-juan.onrender.com/swagger-ui.html)
 
 ### Tecnologías necesarias
 `Java` `Maven` `GitHub` `GitHub Actions` `Sonarcloud` `Slack` `Spring-Boot` `GitHub Packages` `Docker` `OpenAPI`

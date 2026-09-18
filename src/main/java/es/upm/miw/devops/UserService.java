@@ -32,6 +32,12 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    public User update(String id, User user) {
+        this.read(id);
+        user.setId(id);
+        return this.userRepository.save(user);
+    }
+
     public List<User> find(String firstName, String familyName, Boolean billable) {
         return this.userRepository.findAll().stream()
                 .filter(user -> !hasContent(firstName) || firstName.equals(user.getFirstName()))

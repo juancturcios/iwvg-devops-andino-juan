@@ -1,12 +1,15 @@
 package es.upm.miw.devops.rest;
 
 import es.upm.miw.devops.User;
+import es.upm.miw.devops.UserActive;
 import es.upm.miw.devops.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +35,11 @@ public class UserResource {
         return this.userService.find(firstName, familyName, billable);
     }
 
+    @PatchMapping
+    public List<User> updateActive(@RequestBody List<UserActive> activeList) {
+        return this.userService.updateActive(activeList);
+    }
+
     @GetMapping("/{id}")
     public User read(@PathVariable String id) {
         return this.userService.read(id);
@@ -46,5 +54,10 @@ public class UserResource {
     @PutMapping("/{id}/active")
     public User updateActive(@PathVariable String id) {
         return this.userService.updateActive(id);
+    }
+
+    @PutMapping("/{id}")
+    public User update(@PathVariable String id, @RequestBody User user) {
+        return this.userService.update(id, user);
     }
 }

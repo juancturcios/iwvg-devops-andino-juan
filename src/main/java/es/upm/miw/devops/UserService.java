@@ -32,6 +32,22 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    public List<User> updateActive(List<UserActive> activeList) {
+        return activeList.stream()
+                .map(active -> {
+                    User user = this.read(active.id());
+                    user.setActive(active.active());
+                    return this.userRepository.save(user);
+                })
+                .toList();
+    }
+
+    public User update(String id, User user) {
+        this.read(id);
+        user.setId(id);
+        return this.userRepository.save(user);
+    }
+
     public List<User> find(String firstName, String familyName, Boolean billable) {
         return this.userRepository.findAll().stream()
                 .filter(user -> !hasContent(firstName) || firstName.equals(user.getFirstName()))
@@ -39,6 +55,7 @@ public class UserService {
                 .filter(user -> billable == null || billable.equals(user.isBillable()))
                 .toList();
     }
+
 
     private static boolean hasContent(String value) {
         return value != null && !value.isBlank();

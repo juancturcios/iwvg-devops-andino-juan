@@ -110,4 +110,23 @@ class UserServiceTest {
         assertThat(users).hasSize(1);
         assertThat(users.get(0).getId()).isEqualTo("3");
     }
+
+    @Test
+    void testUpdateExistingUser() {
+        User update = new User("3", "Luis", "Gutierrez", "luis.gutierrez@example.com", "11223344C",
+                "C/ Sol 3", "Valencia", "Valencia", "46001", false);
+        User user = this.userService.update("3", update);
+        assertThat(user.getId()).isEqualTo("3");
+        assertThat(user.getCity()).isEqualTo("Valencia");
+        assertThat(user.getProvince()).isEqualTo("Valencia");
+        assertThat(user.isBillable()).isTrue();
+    }
+
+    @Test
+    void testUpdateNotExistingUser() {
+        assertThatThrownBy(() -> this.userService.update("no-existe", new User()))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }

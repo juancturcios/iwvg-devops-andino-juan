@@ -46,6 +46,7 @@ public class UserService {
                 .toList();
     }
 
+
     private static boolean hasContent(String value) {
         return value != null && !value.isBlank();
     }

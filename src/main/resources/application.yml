@@ -1,22 +1,5 @@
-spring:
-  profiles:
-    active: dev
-  output:
-    ansi:
-      enabled: ALWAYS
-  cache:
-    type: none
-  jackson:
-    default-property-inclusion: NON_NULL
-  datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/devopsdb}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
+server:
+  port: 8080
 
 info:
   app:
@@ -24,16 +7,39 @@ info:
     version: "@project.version@"
     build: "@maven.build.timestamp@"
 
-logging:
-  level:
-    root: WARN
-    es.upm.miw: DEBUG
+spring:
+  application:
+    name: iwvg-devops-andino-juan
+  profiles:
+    default: dev
+  output:
+    ansi:
+      enabled: ALWAYS
+  cache:
+    type: none
+  jackson:
+    default-property-inclusion: NON_NULL
+  jpa:
+    open-in-view: false
+
+app:
+  hosting: localhost
+  db:
+    admin: ${DB_ADMIN:admin}
+    mobile: ${DB_MOBILE:6}
+    password: ${DB_PASSWORD:6}
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
-  info:
-    env:
-      enabled: true
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: WARN
+    es.upm.api: DEBUG
+

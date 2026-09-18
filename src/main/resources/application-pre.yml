@@ -1,3 +1,8 @@
+logging:
+  level:
+    root: WARN
+    es.upm.api: INFO
+
 app:
   hosting: render
 

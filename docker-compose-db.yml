@@ -19,7 +19,7 @@ services:
     container_name: postgres-server
     restart: always
     environment:
-      POSTGRES_USER: devopsdb_ktug
+      POSTGRES_USER: postgresivwg
       POSTGRES_PASSWORD: SHA5UTnCFxBn17HkAa1Gio18B5C21PAZ
       POSTGRES_DB: devopsdb_ktug
     ports:

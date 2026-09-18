@@ -171,4 +171,30 @@ class UserResourceFT {
                     assertThat(users.get(0).getId()).isEqualTo("3");
                 });
     }
+
+    @Test
+    void testUpdateUserById() {
+        webTestClient.put()
+                .uri(UserResource.USERS + "/3")
+                .bodyValue(new User("3", "Luis", "Gutierrez", "luis.gutierrez@example.com", "11223344C",
+                        "C/ Sol 3", "Valencia", "Valencia", "46001", false))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .value(user -> {
+                    assertThat(user.getId()).isEqualTo("3");
+                    assertThat(user.getCity()).isEqualTo("Valencia");
+                    assertThat(user.getProvince()).isEqualTo("Valencia");
+                    assertThat(user.isBillable()).isTrue();
+                });
+    }
+
+    @Test
+    void testUpdateUserByIdNotFound() {
+        webTestClient.put()
+                .uri(UserResource.USERS + "/no-existe")
+                .bodyValue(new User())
+                .exchange()
+                .expectStatus().isNotFound();
+    }
 }

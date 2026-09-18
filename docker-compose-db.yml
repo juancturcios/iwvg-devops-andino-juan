@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: devopsDb
+      MYSQL_DATABASE: devopsdb_ktug
     ports:
       - "3306:3306"
     volumes:
@@ -19,9 +19,9 @@ services:
     container_name: postgres-server
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: devopsdb
+      POSTGRES_USER: postgresivwg
+      POSTGRES_PASSWORD: SHA5UTnCFxBn17HkAa1Gio18B5C21PAZ
+      POSTGRES_DB: devopsdb_ktug
     ports:
       - "5432:5432"
     volumes:

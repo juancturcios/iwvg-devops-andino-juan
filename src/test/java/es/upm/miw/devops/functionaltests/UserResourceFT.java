@@ -1,6 +1,7 @@
 package es.upm.miw.devops.functionaltests;
 
 import es.upm.miw.devops.User;
+import es.upm.miw.devops.UserActive;
 import es.upm.miw.devops.rest.UserResource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
@@ -194,6 +197,42 @@ class UserResourceFT {
         webTestClient.put()
                 .uri(UserResource.USERS + "/no-existe")
                 .bodyValue(new User())
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void testUpdateActiveList() {
+        webTestClient.patch()
+                .uri(UserResource.USERS)
+                .bodyValue(List.of(new UserActive("1", false), new UserActive("3", true)))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> {
+                    assertThat(users).hasSize(2);
+                    assertThat(users).extracting(User::getId).containsExactlyInAnyOrder("1", "3");
+                    assertThat(users).filteredOn(user -> user.getId().equals("1"))
+                            .singleElement()
+                            .extracting(User::getActive)
+                            .isEqualTo(false);
+                    assertThat(users).filteredOn(user -> user.getId().equals("3"))
+                            .singleElement()
+                            .extracting(User::getActive)
+                            .isEqualTo(true);
+                });
+        webTestClient.patch()
+                .uri(UserResource.USERS)
+                .bodyValue(List.of(new UserActive("1", true)))
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void testUpdateActiveListNotFound() {
+        webTestClient.patch()
+                .uri(UserResource.USERS)
+                .bodyValue(List.of(new UserActive("no-existe", true)))
                 .exchange()
                 .expectStatus().isNotFound();
     }

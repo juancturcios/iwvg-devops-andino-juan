@@ -1,3 +1,6 @@
+server:
+  port: ${PORT:8080}
+
 logging:
   level:
     root: WARN
@@ -9,7 +12,7 @@ app:
 spring:
   jpa:
     hibernate:
-      dll-auto:update
+      ddl-auto: update
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${SPRING_DATASOURCE_URL}

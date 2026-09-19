@@ -52,10 +52,11 @@ jobs:
       - name: 🚀 Deploy on AWS Lightsail
         uses: appleboy/ssh-action@8faa84277b88b6cd1455986f459aa66cf72bc8a3
         with:
-            host: ${{ secrets.AWS_LIGHTSAIL_IP_MAIN }}
-            username: ${{ secrets.AWS_LIGHTSAIL_USER_MAIN }}
-            key: ${{ secrets.AWS_LIGHTSAIL_SSH_KEY_MAIN }}
-            script: |
+          host: ${{ secrets.AWS_LIGHTSAIL_IP_MAIN }}
+          username: ${{ secrets.AWS_LIGHTSAIL_USER_MAIN }}
+          key: ${{ secrets.AWS_LIGHTSAIL_SSH_KEY_MAIN }}
+          command_timeout: 15m
+          script: |
               APP_NAME=devops-app
               POSTGRES_DB="${{ secrets.POSTGRES_DB }}"
 
@@ -70,8 +71,9 @@ jobs:
                 --memory 512m \
                 --memory-swap 1024m \
                 --network devops \
-                -p 10000:10000 \
+                -p 10000:8080 \
                 -e SPRING_PROFILES_ACTIVE=prod \
+                -e SERVER_PORT=8080 \
                 -e POSTGRES_URL="jdbc:postgresql://postgres-db:5432/$POSTGRES_DB" \
                 -e POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
                 -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \

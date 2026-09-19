@@ -20,8 +20,8 @@ jobs:
           username: ${{ secrets.AWS_LIGHTSAIL_USER_MAIN }}
           key: ${{ secrets.AWS_LIGHTSAIL_SSH_KEY_MAIN }}
           script: |
-            docker rm -f postgres-db || true
-            docker run -d \
+            sudo docker rm -f postgres-db || true
+            sudo docker run -d \
               --name postgres-db \
               --restart always \
               --network devops \
@@ -34,8 +34,8 @@ jobs:
             echo "⏳ Esperando a que Postgres esté listo"
             for i in $(seq 1 6); do
               sleep 5
-              docker exec postgres-db pg_isready -U "${{ secrets.POSTGRES_USER }}" && break
+              sudo docker exec postgres-db pg_isready -U "${{ secrets.POSTGRES_USER }}" && break
             done
 
             echo "✅ Deploy de Postgres exitoso"
-            docker ps --filter name=postgres-db
+            sudo docker ps --filter name=postgres-db

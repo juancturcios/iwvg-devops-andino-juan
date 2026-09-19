@@ -20,14 +20,17 @@ jobs:
           username: ${{ secrets.AWS_LIGHTSAIL_USER_MAIN }}
           key: ${{ secrets.AWS_LIGHTSAIL_SSH_KEY_MAIN }}
           script: |
+            POSTGRES_DB="${{ secrets.POSTGRES_DB }}"
+            POSTGRES_USER="${{ secrets.POSTGRES_USER }}"
+
             sudo docker network create devops || true
             sudo docker rm -f postgres-db || true
             sudo docker run -d \
               --name postgres-db \
               --restart always \
               --network devops \
-              -e POSTGRES_DB="${{ secrets.POSTGRES_DB }}" \
-              -e POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
+              -e POSTGRES_DB="$POSTGRES_DB" \
+              -e POSTGRES_USER="$POSTGRES_USER" \
               -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
               -v postgres-data:/var/lib/postgresql/data \
               postgres:15.10
@@ -35,8 +38,17 @@ jobs:
             echo "⏳ Esperando a que Postgres esté listo"
             for i in $(seq 1 6); do
               sleep 5
-              sudo docker exec postgres-db pg_isready -U "${{ secrets.POSTGRES_USER }}" && break
+              sudo docker exec postgres-db pg_isready -U "$POSTGRES_USER" && break
             done
+
+            echo "🔧 Asegurando que la base de datos '$POSTGRES_DB' exista"
+            DB_EXISTS=$(sudo docker exec postgres-db psql -U "$POSTGRES_USER" -tAc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'" 2>/dev/null)
+            if [ "$DB_EXISTS" != "1" ]; then
+              sudo docker exec postgres-db createdb -U "$POSTGRES_USER" "$POSTGRES_DB"
+              echo "✅ Base de datos '$POSTGRES_DB' creada"
+            else
+              echo "✅ La base de datos '$POSTGRES_DB' ya existía"
+            fi
 
             echo "✅ Deploy de Postgres exitoso"
             sudo docker ps --filter name=postgres-db

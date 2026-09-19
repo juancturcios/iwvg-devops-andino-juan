@@ -1,0 +1,41 @@
+name: CD Postgres DB
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  cd-postgres:
+    name: Deploy Postgres on AWS Lightsail
+    runs-on: ubuntu-22.04
+    steps:
+      # 1º Crear secret en GitHub:
+      #    Repo → Settings → Secrets and variables → Actions → New repository secret
+      #    Name: POSTGRES_DB, Value: <nombre de la base de datos>   (ej: devopsdb_ktug)
+      #    (POSTGRES_USER y POSTGRES_PASSWORD ya se usan en cd-master.yml)
+      - name: 🚀 Deploy Postgres container on AWS Lightsail
+        uses: appleboy/ssh-action@8faa84277b88b6cd1455986f459aa66cf72bc8a3
+        with:
+          host: ${{ secrets.AWS_LIGHTSAIL_IP_MAIN }}
+          username: ${{ secrets.AWS_LIGHTSAIL_USER_MAIN }}
+          key: ${{ secrets.AWS_LIGHTSAIL_SSH_KEY_MAIN }}
+          script: |
+            docker rm -f postgres-db || true
+            docker run -d \
+              --name postgres-db \
+              --restart always \
+              --network devops \
+              -e POSTGRES_DB="${{ secrets.POSTGRES_DB }}" \
+              -e POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
+              -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
+              -v postgres-data:/var/lib/postgresql/data \
+              postgres:15.10
+
+            echo "⏳ Esperando a que Postgres esté listo"
+            for i in $(seq 1 6); do
+              sleep 5
+              docker exec postgres-db pg_isready -U "${{ secrets.POSTGRES_USER }}" && break
+            done
+
+            echo "✅ Deploy de Postgres exitoso"
+            docker ps --filter name=postgres-db

@@ -20,6 +20,7 @@ jobs:
           username: ${{ secrets.AWS_LIGHTSAIL_USER_MAIN }}
           key: ${{ secrets.AWS_LIGHTSAIL_SSH_KEY_MAIN }}
           script: |
+            sudo docker network create devops || true
             sudo docker rm -f postgres-db || true
             sudo docker run -d \
               --name postgres-db \

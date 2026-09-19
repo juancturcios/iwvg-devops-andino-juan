@@ -56,38 +56,42 @@ jobs:
             username: ${{ secrets.AWS_LIGHTSAIL_USER_MAIN }}
             key: ${{ secrets.AWS_LIGHTSAIL_SSH_KEY_MAIN }}
             script: |
-              echo ${{ secrets.GHCR_PERSONAL_ACCESS_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-              
-              docker pull ghcr.io/${{ env.REPOSITORY }}:latest
-              docker rm -f ${{ env.ARTIFACT }} || true
-              docker run -d \
-                --name ${{ env.ARTIFACT }} \
+              APP_NAME=devops-app
+              POSTGRES_DB="${{ secrets.POSTGRES_DB }}"
+
+              echo ${{ secrets.GHCR_PERSONAL_ACCESS_TOKEN }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+              sudo docker pull ghcr.io/${{ env.REPOSITORY }}:latest
+              sudo docker rm -f $APP_NAME || true
+              sudo docker run -d \
+                --name $APP_NAME \
                 --restart always \
                 --memory 512m \
                 --memory-swap 1024m \
                 --network devops \
                 -p 10000:10000 \
                 -e SPRING_PROFILES_ACTIVE=prod \
+                -e POSTGRES_URL="jdbc:postgresql://postgres-db:5432/$POSTGRES_DB" \
                 -e POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
                 -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
                 ghcr.io/${{ env.REPOSITORY }}:latest
-              
+
               echo "⏳ Esperando a que se levante"
               for i in $(seq 1 6); do
                 sleep 15
-                STATUS=$(docker inspect --format='{{.State.Health.Status}}' ${{ env.ARTIFACT }} 2>/dev/null)
+                STATUS=$(sudo docker inspect --format='{{.State.Health.Status}}' $APP_NAME 2>/dev/null)
                 echo "Intento $i: $STATUS"
                 [ "$STATUS" = "healthy" ] && break
               done
-              
+
               if [ "$STATUS" != "healthy" ]; then
                 echo "❌ Deploy fallido"
-                docker logs --tail 50 ${{ env.ARTIFACT }}
+                sudo docker logs --tail 50 $APP_NAME
                 exit 1
               fi
-              
+
               echo "✅ Deploy exitoso"
-              docker image prune --filter "until=12h" -f
+              sudo docker image prune --filter "until=12h" -f
             
 
       #  run: |

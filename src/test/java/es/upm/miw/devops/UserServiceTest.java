@@ -1,5 +1,8 @@
 package es.upm.miw.devops;
 
+import es.upm.miw.devops.code.User;
+import es.upm.miw.devops.code.UserActive;
+import es.upm.miw.devops.code.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -133,10 +136,10 @@ class UserServiceTest {
     @Test
     void testUpdateActiveList() {
         List<User> users = this.userService.updateActive(
-                List.of(new UserActive("1", false), new UserActive("3", true)));
+                List.of(new UserActive("2", false), new UserActive("3", true)));
         assertThat(users).hasSize(2);
-        assertThat(users).extracting(User::getId).containsExactlyInAnyOrder("1", "3");
-        assertThat(users).filteredOn(user -> user.getId().equals("1"))
+        assertThat(users).extracting(User::getId).containsExactlyInAnyOrder("2", "3");
+        assertThat(users).filteredOn(user -> user.getId().equals("2"))
                 .singleElement()
                 .extracting(User::getActive)
                 .isEqualTo(false);
@@ -144,7 +147,19 @@ class UserServiceTest {
                 .singleElement()
                 .extracting(User::getActive)
                 .isEqualTo(true);
-        this.userService.updateActive(List.of(new UserActive("1", true)));
+        this.userService.updateActive(List.of(new UserActive("2", true)));
+    }
+
+    @Test
+    void testUpdateActiveAdminNotAllowed() {
+        assertThatThrownBy(() -> this.userService.updateActive("1"))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThatThrownBy(() -> this.userService.updateActive(List.of(new UserActive("1", false))))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test

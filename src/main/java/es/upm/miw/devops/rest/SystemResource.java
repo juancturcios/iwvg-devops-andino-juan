@@ -50,6 +50,7 @@ public class SystemResource {
     @GetMapping
     public String applicationInfo() {
         String appInfo = "{\"version\":\"" + this.artifact + "::" + this.version + "::" + this.build + "\"} <br> <br>";
+        appInfo += "/users <br><br>";
         appInfo += "/version-badge <br><br>";
         appInfo += "/actuator/info <br> /actuator/health <br><br>";
         appInfo += "/swagger-ui.html  <br> /v3/api-docs <br>";
@@ -58,7 +59,7 @@ public class SystemResource {
 
     @GetMapping(value = VERSION_BADGE, produces = {"image/svg+xml"})
     public byte[] generateBadge() {
-        return this.generateBadge("Render", "v" + version).getBytes();
+        return this.generateBadge("Lightsail", "v" + version).getBytes();
     }
 
 }

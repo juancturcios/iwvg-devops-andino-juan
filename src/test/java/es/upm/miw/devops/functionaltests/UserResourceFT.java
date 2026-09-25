@@ -1,7 +1,7 @@
 package es.upm.miw.devops.functionaltests;
 
-import es.upm.miw.devops.User;
-import es.upm.miw.devops.UserActive;
+import es.upm.miw.devops.code.User;
+import es.upm.miw.devops.code.UserActive;
 import es.upm.miw.devops.rest.UserResource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +94,16 @@ class UserResourceFT {
                 .uri(UserResource.USERS + "/no-existe/active")
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @Test
+    void testReadAllUsers() {
+        webTestClient.get()
+                .uri(UserResource.USERS_ALL)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> assertThat(users).extracting(User::getId).contains("1", "3"));
     }
 
     @Test
@@ -205,14 +215,14 @@ class UserResourceFT {
     void testUpdateActiveList() {
         webTestClient.patch()
                 .uri(UserResource.USERS)
-                .bodyValue(List.of(new UserActive("1", false), new UserActive("3", true)))
+                .bodyValue(List.of(new UserActive("2", false), new UserActive("3", true)))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(User.class)
                 .value(users -> {
                     assertThat(users).hasSize(2);
-                    assertThat(users).extracting(User::getId).containsExactlyInAnyOrder("1", "3");
-                    assertThat(users).filteredOn(user -> user.getId().equals("1"))
+                    assertThat(users).extracting(User::getId).containsExactlyInAnyOrder("2", "3");
+                    assertThat(users).filteredOn(user -> user.getId().equals("2"))
                             .singleElement()
                             .extracting(User::getActive)
                             .isEqualTo(false);
@@ -223,9 +233,28 @@ class UserResourceFT {
                 });
         webTestClient.patch()
                 .uri(UserResource.USERS)
-                .bodyValue(List.of(new UserActive("1", true)))
+                .bodyValue(List.of(new UserActive("2", true)))
                 .exchange()
                 .expectStatus().isOk();
+    }
+
+    @Test
+    void testUpdateActiveAdminNotAllowed() {
+        webTestClient.put()
+                .uri(UserResource.USERS + "/1/active")
+                .exchange()
+                .expectStatus().isUnauthorized();
+        webTestClient.patch()
+                .uri(UserResource.USERS)
+                .bodyValue(List.of(new UserActive("1", false)))
+                .exchange()
+                .expectStatus().isUnauthorized();
+        webTestClient.get()
+                .uri(UserResource.USERS + "/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .value(user -> assertThat(user.getActive()).isTrue());
     }
 
     @Test

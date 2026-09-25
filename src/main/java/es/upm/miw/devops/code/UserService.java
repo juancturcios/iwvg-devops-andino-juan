@@ -1,4 +1,4 @@
-package es.upm.miw.devops;
+package es.upm.miw.devops.code;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,9 @@ public class UserService {
 
     public User updateActive(String id) {
         User user = this.read(id);
+        if (Role.ADMIN.equals(user.getRole()) && Boolean.TRUE.equals(user.getActive())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Admin user can't be deactivated");
+        }
         user.setActive(!user.getActive());
         return this.userRepository.save(user);
     }
@@ -36,6 +39,9 @@ public class UserService {
         return activeList.stream()
                 .map(active -> {
                     User user = this.read(active.id());
+                    if (Role.ADMIN.equals(user.getRole()) && !active.active()) {
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Admin user can't be deactivated");
+                    }
                     user.setActive(active.active());
                     return this.userRepository.save(user);
                 })
@@ -43,8 +49,9 @@ public class UserService {
     }
 
     public User update(String id, User user) {
-        this.read(id);
+        User existing = this.read(id);
         user.setId(id);
+        user.setRole(existing.getRole());
         return this.userRepository.save(user);
     }
 
@@ -55,7 +62,6 @@ public class UserService {
                 .filter(user -> billable == null || billable.equals(user.isBillable()))
                 .toList();
     }
-
 
     private static boolean hasContent(String value) {
         return value != null && !value.isBlank();

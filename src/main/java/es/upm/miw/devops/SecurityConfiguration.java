@@ -21,7 +21,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 // CSRF protection is disabled because this is a stateless REST API
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) // NOSONAR: stateless REST API without session or cookie-based auth
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .build();
     }

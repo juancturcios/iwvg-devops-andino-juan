@@ -2,12 +2,12 @@
 ## Ingeniería Web: Visión General (IWVG) DevOps
 > Este proyecto es un apoyo docente de la asignatura. Cada release liberada corresponde al código utilizado en clase del curso indicado
 
-[![GitHub](https://img.shields.io/github/license/miw-upm/iwvg-devops?color=informational)](https://github.com/miw-upm/iwvg-devops/blob/develop/LICENSE.md)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/miw-upm/iwvg-devops?color=informational)](https://github.com/miw-upm/iwvg-devops/releases)
-![GitHub Release Date](https://img.shields.io/github/release-date/miw-upm/iwvg-devops?color=informational)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/miw-upm/iwvg-devops)
-![GitHub issues](https://img.shields.io/github/issues/miw-upm/iwvg-devops?color=important)
-![GitHub closed issues](https://img.shields.io/github/issues-closed/miw-upm/iwvg-devops?color=informational)
+[![GitHub](https://img.shields.io/github/license/juancturcios/iwvg-devops-andino-juan?color=brightgreen)](https://github.com/juancturcios/iwvg-devops-andino-juan/blob/master/LICENSE.md)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/juancturcios/iwvg-devops-andino-juan?color=brightgreen)](https://github.com/juancturcios/iwvg-devops-andino-juan/releases)
+![GitHub Release Date](https://img.shields.io/github/release-date/juancturcios/iwvg-devops-andino-juan?color=brightgreen)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/juancturcios/iwvg-devops-andino-juan?color=brightgreen)
+![GitHub issues](https://img.shields.io/github/issues/juancturcios/iwvg-devops-andino-juan?color=brightgreen)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/juancturcios/iwvg-devops-andino-juan?color=brightgreen)
 
 ### Estado del código
 [![DevOps](https://github.com/juancturcios/iwvg-devops-andino-juan/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/juancturcios/iwvg-devops-andino-juan/actions/workflows/continuous-integration.yml)
@@ -25,7 +25,7 @@ LightSail: http://35.176.105.23:8080/swagger-ui/index.html
 1. Clonar el repositorio en tu equipo, **mediante consola**:
 ```sh
 cd <folder path>
-git clone https://github.com/miw-upm/iwvg-devops
+git clone https://github.com/juancturcios/iwvg-devops-andino-juan
 ```
 2. Importar el proyecto mediante **IntelliJ IDEA**  
    * **Open**, y seleccionar la carpeta del proyecto.
